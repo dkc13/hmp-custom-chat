@@ -1,0 +1,5 @@
+<!-- Disable default chat. -->
+<chat>false</chat>
+
+<!-- Add chat resource to your resources list. -->
+<resource>chat</resource>

@@ -1,0 +1,8 @@
+<meta type="lua">
+	<file src="chat/ui/index.html" />
+	<file src="chat/ui/styles.css" />
+	<file src="chat/ui/script.js" />
+
+	<script type="client" src="chat/client_chat.lua" />
+	<script type="server" src="chat/server_chat.lua" />
+</meta>

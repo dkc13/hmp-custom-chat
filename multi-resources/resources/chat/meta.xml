@@ -1,0 +1,16 @@
+<meta type="lua">
+    <file src="ui/index.html" />
+    <file src="ui/styles.css" />
+    <file src="ui/script.js" />
+
+    <script type="client" src="client_chat.lua" />
+	<export type="client" function="Create" />
+    <export type="client" function="Destroy" />
+    <export type="client" function="AddMessage" />
+    <export type="client" function="Clear" />
+    <export type="client" function="IsInputActive" />
+
+    <script type="server" src="server_chat.lua" />
+    <export type="server" function="SendMessage" />
+    <export type="server" function="BroadcastMessage" />
+</meta>

@@ -1,0 +1,4 @@
+<meta type="lua">
+	<script type="client" src="chat_functions/client_chat_functions.lua" />
+	<script type="server" src="chat_functions/server_chat_functions.lua" />
+</meta>
