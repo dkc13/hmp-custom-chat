@@ -93,7 +93,7 @@ For larger server structures, you can keep the chat in its own resource and use 
 
 4. **In every other resource that will use chat features**, do the following:
 
-* Copy the ``chat_functions/`` folder from ``multi-resources/resources/put`` in other resources/ into the target resource.
+* Copy the ``chat_functions/`` folder from ``multi-resources/resources/put in other resources/`` into the target resource.
 
 * Update that resource’s ``meta.xml`` with:
 
