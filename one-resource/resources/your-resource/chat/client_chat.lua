@@ -66,11 +66,15 @@ Events.Subscribe("chatInputLoop", function ()
 end)
 
 Events.Subscribe("chatInputToggle", function (state)
+    local playerId = Game.GetPlayerId()
+
     -- Toggle the chat input state.
     if state then
+        Game.NetworkSetLocalPlayerIsTyping(playerId) -- Turn on typing indicator.
         chatInput = true
         WebUI.SetFocus(webuiChat, false)
     else
+        Game.NetworkSetLocalPlayerIsTyping(playerId) -- Turn off typing indicator.
         chatInput = false
         WebUI.SetFocus(-1)
     end
