@@ -1,5 +1,5 @@
 -- Chat Variables ---------------------------------------------------------------------------------
-local webuiChatPath = "file://your_resource/chat/ui/index.html" -- URL for the chat WebUI.
+local webuiChatPath = "file://chat/ui/index.html" -- URL for the chat WebUI.
 local webuiChat                                                 -- WebUI instance for the chat interface.
 local chatInputKey = 21                                         -- Key code for the chat input toggle (e.g., 21 for 'Y' key).
 local chatInput = false                                         -- Flag to track if chat input is active.
