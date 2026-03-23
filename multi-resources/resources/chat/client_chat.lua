@@ -1,20 +1,31 @@
 -- Chat Variables ---------------------------------------------------------------------------------
-local webuiChat
-local chatInput = false
+local webuiChatPath = "file://your_resource/chat/ui/index.html" -- URL for the chat WebUI.
+local webuiChat                                                 -- WebUI instance for the chat interface.
+local chatInputKey = 21                                         -- Key code for the chat input toggle (e.g., 21 for 'Y' key).
+local chatInput = false                                         -- Flag to track if chat input is active.
 
 -- Chat Functions ---------------------------------------------------------------------------------
 
 function Create()
     local screenX, screenY = Game.GetScreenResolution()
-    webuiChat = WebUI.Create("file://chat/ui/index.html", screenX, screenY, true)
+
+    -- Create chat WebUI using screen resolution, clamp to 1080p and stretch if higher.
+    if not (screenX > 1920 or screenY > 1080) then
+        webuiChat = WebUI.Create(webuiChatPath, screenX, screenY, true)
+    else
+        webuiChat = WebUI.Create(webuiChatPath, 1920, 1080, true)
+        WebUI.SetRect(webuiChat, 0, 0, screenX, screenY)
+    end
 
     Events.Call("chatInputLoop", {})
+    Events.Call("chatTypingLoop", {})
 end
 
 function Destroy()
     if webuiChat then
         WebUI.Destroy(webuiChat)
         webuiChat = nil
+        chatInput = false
     end
 end
 
@@ -51,7 +62,7 @@ Events.Subscribe("chatInputLoop", function ()
         while true do
             Thread.Pause(0)
             if webuiChat then
-                if Game.IsGameKeyboardKeyJustPressed(21) then
+                if Game.IsGameKeyboardKeyJustPressed(chatInputKey) then
                     WebUI.CallEvent(webuiChat, "forceInput", {true})
                     Thread.Pause(100)
                 end
@@ -64,18 +75,31 @@ Events.Subscribe("chatInputLoop", function ()
 end)
 
 Events.Subscribe("chatInputToggle", function (state)
-    local playerId = Game.GetPlayerId()
-
     -- Toggle the chat input state.
     if state then
-        Game.NetworkSetLocalPlayerIsTyping(playerId) -- Turn on typing indicator.
         chatInput = true
         WebUI.SetFocus(webuiChat, false)
     else
-        Game.NetworkSetLocalPlayerIsTyping(playerId) -- Turn off typing indicator.
         chatInput = false
         WebUI.SetFocus(-1)
     end
+end)
+
+Events.Subscribe("chatTypingLoop", function ()
+    Thread.Create(function ()
+        while true do
+            if webuiChat then
+                local playerId = Game.GetPlayerId()
+                if chatInput then
+                    Game.NetworkSetLocalPlayerIsTyping(playerId) -- Set typing indicator on while chat input is active.
+                    Thread.Pause(1900) -- Pause slightly below 2000ms because NetworkSetLocalPlayerIsTyping lasts 2000ms, to keep the typing indicator active without interruption.
+                end
+            else
+                -- If the webuiChat is destroyed, exit the loop.
+                return
+            end
+        end
+    end)
 end)
 
 -- Global Chat Functionality ----------------------------------------------------------------------
@@ -114,3 +138,13 @@ Events.Subscribe("chatSubmit", function (message)
 
     Events.CallRemote("chatSendGlobalMessage", { "{" .. string.sub(hexColor, 1, 6) .. "}" .. Game.GetPlayerName(playerId) .. ": {ffffff}" .. message})
 end)
+
+-- Change Chat Key --------------------------------------------------------------------------------
+
+Events.Subscribe("chatInputKeyChange", function (newKey)
+    -- Update chat key from external script.
+    newKey = tonumber(newKey) -- Ensure the new key is a number.
+    if newKey and newKey > 0 and newKey < 222 then
+        chatInputKey = newKey
+    end
+end, true)

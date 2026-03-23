@@ -56,7 +56,7 @@ resources/your-resource/chat/
 4. **Adjust the WebUI path** in ``client_chat.lua``:
 
 ```lua
-webuiChat = WebUI.Create("file://your-resource/chat/ui/index.html", screenX, screenY, true)
+local webuiChatPath = "file://your_resource/chat/ui/index.html"
 ```
 
 ## 🔁 Multi-Resource Setup
@@ -91,6 +91,12 @@ For larger server structures, you can keep the chat in its own resource and use 
 </meta>
 ```
 
+5. **Adjust the WebUI path** in ``client_chat.lua``:
+
+```lua
+local webuiChatPath = "file://your_resource/chat/ui/index.html"
+```
+
 This setup allows your other resources to communicate with the chat system using **export functions**.
 
 ---
@@ -99,13 +105,10 @@ This setup allows your other resources to communicate with the chat system using
 
 By default, the chat opens when pressing the **Y** key (`key code 21`).
 
-You can change this by modifying the following line inside `client_chat.lua`, inside the `chatInputLoop` event:
+You can change this dynamically using the `chatInputKeyChange` event, or by modifying the `chatInputKey` variable in `client_chat.lua`:
 
-```lua
-if Game.IsGameKeyboardKeyJustPressed(21) then
-```
+The chat input loop uses the `chatInputKey` variable, so it will respond to whichever key you set.
 
-Replace 21 with the desired key ID.
 ➡ You can find all valid key IDs here:
 https://happinessmp.net/docs/game/keys
 
@@ -145,6 +148,19 @@ On the client side, the `chatInput` event determines whether the input is:
 - A command (starts with `/`, calls `chatCommand`)
 
 This separation allows message and command handling to be managed independently.
+
+### ⌨️ Typing Indicator
+
+This system also includes a **typing indicator**. It automatically shows when the player has the chat input active and hides when the input is closed.  
+
+The typing system has been **reimplemented on the networking layer**, so you can also use the native function to check if a specific player is currently typing:
+
+```lua
+Game.NetworkIsPlayerTyping(playerId)
+```
+
+By default, this works with the built-in player name and typing icon.
+If you want to create a custom typing indicator, this function is especially useful to detect typing state for your own UI or features.
 
 ### 🧩 Overwritten `Chat.` Functions
 
