@@ -90,6 +90,7 @@ end)
 Events.Subscribe("chatTypingLoop", function ()
     Thread.Create(function ()
         while true do
+            Thread.Pause(0)
             if webuiChat then
                 local playerId = Game.GetPlayerId()
                 if chatInput then
