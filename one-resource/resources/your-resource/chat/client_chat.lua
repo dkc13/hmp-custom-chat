@@ -10,15 +10,7 @@ Chat = {}
 
 function Chat.Create()
     local screenX, screenY = Game.GetScreenResolution()
-
-    -- Create chat WebUI using screen resolution, clamp to 1080p and stretch if higher.
-    if not (screenX > 1920 or screenY > 1080) then
-        webuiChat = WebUI.Create(webuiChatPath, screenX, screenY, true)
-    else
-        webuiChat = WebUI.Create(webuiChatPath, 1920, 1080, true)
-        WebUI.SetRect(webuiChat, 0, 0, screenX, screenY)
-    end
-
+    webuiChat = WebUI.Create(webuiChatPath, screenX, screenY, true)
     Events.Call("chatInputLoop", {})
     Events.Call("chatTypingLoop", {})
 end
