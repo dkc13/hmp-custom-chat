@@ -6,38 +6,38 @@ local chatInput = false                                         -- Flag to track
 
 -- Chat Functions ---------------------------------------------------------------------------------
 
-Chat = {}
+Chat = {
+    Create = function ()
+        local screenX, screenY = Game.GetScreenResolution()
+        webuiChat = WebUI.Create(webuiChatPath, screenX, screenY, true)
+        Events.Call("chatInputLoop", {})
+        Events.Call("chatTypingLoop", {})
+    end,
 
-function Chat.Create()
-    local screenX, screenY = Game.GetScreenResolution()
-    webuiChat = WebUI.Create(webuiChatPath, screenX, screenY, true)
-    Events.Call("chatInputLoop", {})
-    Events.Call("chatTypingLoop", {})
-end
+    Destroy = function ()
+        if webuiChat then
+            WebUI.Destroy(webuiChat)
+            webuiChat = nil
+            chatInput = false
+        end
+    end,
 
-function Chat.Destroy()
-    if webuiChat then
-        WebUI.Destroy(webuiChat)
-        webuiChat = nil
-        chatInput = false
+    AddMessage = function (message)
+        if webuiChat then
+            WebUI.CallEvent(webuiChat, "chatMessage", {message})
+        end
+    end,
+
+    Clear = function ()
+        if webuiChat then
+            WebUI.CallEvent(webuiChat, "chatClear", {})
+        end
+    end,
+
+    IsInputActive = function ()
+        return chatInput
     end
-end
-
-function Chat.AddMessage(message)
-    if webuiChat then
-        WebUI.CallEvent(webuiChat, "chatMessage", {message})
-    end
-end
-
-function Chat.Clear()
-    if webuiChat then
-        WebUI.CallEvent(webuiChat, "chatClear", {})
-    end
-end
-
-function Chat.IsInputActive()
-    return chatInput
-end
+}
 
 Events.Subscribe("chatSendMessage", function (message)
     Chat.AddMessage(message)
