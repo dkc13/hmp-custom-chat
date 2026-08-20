@@ -4,6 +4,17 @@ local webuiChat                                                 -- WebUI instanc
 local chatInputKey = 21                                         -- Key code for the chat input toggle (e.g., 21 for 'Y' key).
 local chatInput = false                                         -- Flag to track if chat input is active.
 
+-- Game Adjustement -------------------------------------------------------------------------------
+
+-- DisableZoomRadar for T key
+local function updateRadarZoom(key)
+    if key == 20 then
+        Game.DisableZoomRadar(true)
+    else
+        Game.DisableZoomRadar(false)
+    end
+end
+
 -- Chat Functions ---------------------------------------------------------------------------------
 
 function Create()
@@ -11,6 +22,7 @@ function Create()
     webuiChat = WebUI.Create(webuiChatPath, screenX, screenY, true)
     Events.Call("chatInputLoop", {})
     Events.Call("chatTypingLoop", {})
+    updateRadarZoom(chatInputKey)
 end
 
 function Destroy()
@@ -18,6 +30,7 @@ function Destroy()
         WebUI.Destroy(webuiChat)
         webuiChat = nil
         chatInput = false
+        updateRadarZoom(false)
     end
 end
 
@@ -137,7 +150,8 @@ end)
 Events.Subscribe("chatInputKeyChange", function (newKey)
     -- Update chat key from external script.
     newKey = tonumber(newKey) -- Ensure the new key is a number.
-    if newKey and newKey > 0 and newKey < 222 then
+    if newKey and newKey > 0 and newKey < 222 and newKey ~= chatInputKey then
         chatInputKey = newKey
+        updateRadarZoom(chatInputKey)
     end
 end, true)
