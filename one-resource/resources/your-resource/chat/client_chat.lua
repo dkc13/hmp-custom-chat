@@ -17,6 +17,11 @@ end
 
 Chat = {
     Create = function ()
+        if webuiChat then
+            -- If webui already exists, abort creating new one.
+            return
+        end
+        
         local screenX, screenY = Game.GetScreenResolution()
         webuiChat = WebUI.Create(webuiChatPath, screenX, screenY, true)
         Events.Call("chatInputLoop", {})
@@ -95,8 +100,8 @@ Events.Subscribe("chatTypingLoop", function ()
         while true do
             Thread.Pause(0)
             if webuiChat then
-                local playerId = Game.GetPlayerId()
                 if chatInput then
+                    local playerId = Game.GetPlayerId()
                     Game.NetworkSetLocalPlayerIsTyping(playerId) -- Set typing indicator on while chat input is active.
                     Thread.Pause(1900) -- Pause slightly below 2000ms because NetworkSetLocalPlayerIsTyping lasts 2000ms, to keep the typing indicator active without interruption.
                 end
