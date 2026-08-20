@@ -6,13 +6,11 @@ local chatInput = false                                         -- Flag to track
 
 -- Game Adjustement -------------------------------------------------------------------------------
 
--- DisableZoomRadar for T key
+-- Disable radar zoom feature when the chat key is set to 'T' (Key code 20)
+local disableRadarZoom = true
+
 local function updateRadarZoom(key)
-    if key == 20 then
-        Game.DisableZoomRadar(true)
-    else
-        Game.DisableZoomRadar(false)
-    end
+    Game.DisableZoomRadar(disableRadarZoom and key == 20)
 end
 
 -- Chat Functions ---------------------------------------------------------------------------------
