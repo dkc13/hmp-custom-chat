@@ -110,39 +110,18 @@ end)
 
 -- Global Chat Functionality ----------------------------------------------------------------------
 
-local function rgbToHex(rgb)
-	--local hexadecimal = '0X'
-    local hexadecimal = ''
-
-	for key, value in pairs(rgb) do
-		local hex = ''
-
-		while(value > 0)do
-			local index = math.fmod(value, 16) + 1
-			value = math.floor(value / 16)
-			hex = string.sub('0123456789ABCDEF', index, index) .. hex			
-		end
-
-		if(string.len(hex) == 0)then
-			hex = '00'
-
-		elseif(string.len(hex) == 1)then
-			hex = '0' .. hex
-		end
-
-		hexadecimal = hexadecimal .. hex
-	end
-
-    --return hexadecimal
-    return string.lower(hexadecimal)
+local function rgbToHex(r, g, b)
+    return string.format("%02x%02x%02x", r or 255, g or 255, b or 255)
 end
 
 Events.Subscribe("chatSubmit", function (message)
     local playerId = Game.GetPlayerId()
-    local rgb = table.pack(Game.GetPlayerRgbColour(Game.GetPlayerId()))
-    local hexColor = rgbToHex(rgb)
+    local r, g, b = Game.GetPlayerRgbColour(playerId)
+    local hexColor = rgbToHex(r, g, b)
 
-    Events.CallRemote("chatSendGlobalMessage", { "{" .. string.sub(hexColor, 1, 6) .. "}" .. Game.GetPlayerName(playerId) .. ": {ffffff}" .. message})
+    Events.CallRemote("chatSendGlobalMessage", { 
+        "{" .. hexColor .. "}" .. Game.GetPlayerName(playerId) .. ": {ffffff}" .. message 
+    })
 end)
 
 -- Change Chat Key --------------------------------------------------------------------------------
