@@ -99,7 +99,7 @@ ready(function()
                 {
                     toggleInput(false);
 
-                    e.preventDefault();
+                    event.preventDefault();
                 }
 
                 break;
